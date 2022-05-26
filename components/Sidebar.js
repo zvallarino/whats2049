@@ -12,6 +12,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { where } from 'firebase/firestore';
 import { query } from 'firebase/firestore';
+import Chat from './Chat';
 
 
 function Sidebar() {
@@ -44,8 +45,8 @@ function Sidebar() {
 
   const chatAlreadyExists = (secondEmail)=>{
     if(!!chatSnapShot){
-      getDocs(chatSnapShot.find((chat)=>chat.data().users.find(
-        (user)=>user.email === secondEmail?.length > 0)))
+      return chatSnapShot?.docs.find(chat =>
+        chat.data().users.find(user => user === secondEmail)?.length > 0)
     }
   }
 
@@ -76,7 +77,8 @@ function Sidebar() {
 
 
       {/* list of chats */}
-
+      {chatSnapShot?.docs.map(chat => (
+      <Chat key = {chat.id} id={chat.id} users={chat.data().users} />))}
       
     </Container>
   )
