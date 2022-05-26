@@ -50,10 +50,11 @@ function Sidebar() {
     }
   }
 
+  console.log(user.photoURL)
   return (
     <Container>
       <Header>
-        <UserAvatar onClick = {()=>auth.signOut()}/>
+        <UserAvatar src = {user.photoURL} onClick = {()=>auth.signOut()}/>
 
         <IconContainer>
 
