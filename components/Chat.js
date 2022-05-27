@@ -7,6 +7,7 @@ import { useAuthState } from "react-firebase-hooks/auth"
 import { collection, query, where } from 'firebase/firestore'
 import { useCollection } from 'react-firebase-hooks/firestore'
 import { useRouter } from 'next/router'
+import { getDoc } from "firebase/firestore"
 
 function Chat({id, users}) {
 
@@ -24,13 +25,14 @@ function Chat({id, users}) {
 
   return (
     <Container onClick = {enterChat}>
-      {recipient? <UserAvatar src = {recipient?.photoURL}/>:<UserAvatar>{recipientEmail[0]}</UserAvatar>}
+      {recipient? 
+      <UserAvatar src = {recipient?.photoURL}/>:<UserAvatar>{recipientEmail[0]}</UserAvatar>}
       <p>{recipientEmail}</p>
     </Container>
   )
 }
 
-export default Chat
+export default Chat;
 
 const Container = styled.div`
 display:flex;

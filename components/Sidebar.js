@@ -7,12 +7,10 @@ import { Button, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import * as EmailValidator from "email-validator";
 import { auth,db } from '../firebase';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, getDocs, where, query } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import { where } from 'firebase/firestore';
-import { query } from 'firebase/firestore';
-import Chat from './Chat';
+import Chat from "./Chat"
 
 
 function Sidebar() {
@@ -88,6 +86,20 @@ function Sidebar() {
 export default Sidebar;
 
 const Container = styled.div`
+flex:0.45;
+border-right:1px solid whitesmoke;
+height:100vh;
+min-width:300px;
+max-width:350px;
+overflow-y:scroll;
+
+::-webkit-scrollbar{
+  display:none;
+}
+
+-ms-overflow-style:none;
+scrollbar-width:none;
+
 `;
 
 const Search = styled.div`
