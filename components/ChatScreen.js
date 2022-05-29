@@ -11,9 +11,12 @@ import { addDoc, collection, doc, orderBy, query, serverTimestamp, setDoc, where
 import Message from './Message'
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import MicIcon from '@mui/icons-material/Mic';
+import getRecipientEmail from '../utils/getRecipientEmail';
+import TimeAgo from 'timeago-react';
 
 
-function ChatScreen({chat,message}) {
+function ChatScreen({chat,messages}) {
+  console.log(chat,messages)
   
   const [user] = useAuthState(auth)
   const [input, setInput] = useState("");
@@ -25,6 +28,11 @@ function ChatScreen({chat,message}) {
   const stepFour = query(stepThree, orderBy("timestamp", "asc"));
   const [messagesSnapshot] = useCollection(stepFour);
 
+  const step1 = collection(db,"users")
+  console.log(step1)
+  const queriedInfo = query(step1,where("email","==",getRecipientEmail(chat.users,user)))
+  const [recipientSnapshot] = useCollection(queriedInfo)
+ 
   const showMessages = () => {
     if(messagesSnapshot){
       return messagesSnapshot.docs.map(message => (
@@ -38,8 +46,10 @@ function ChatScreen({chat,message}) {
         />
         )
         )
+    } else {
+      return JSON.parse(messages).map(message => (<Message key={message.id} message={message} />))
     }
-    return 
+     
   }
 
   const sendMessage = (e) => {
@@ -58,20 +68,32 @@ function ChatScreen({chat,message}) {
       timestamp: serverTimestamp(),
       message:input,
       user:user.email, 
-      photoUrl:user.photoURL,
+      photoURL:user.photoURL,
     })
 
     setInput("")
 
   }
 
+  const recipient = recipientSnapshot?.docs?.[0]?.data();
+  const recipientEmail =getRecipientEmail(chat.users,user)
+
   return (
     <Container>
       <Header>
-      <Avatar />
+      {recipient? (
+        <Avatar src = {recipient?.photoURL}/>
+      ):(<Avatar>{recipientEmail[0]}</Avatar>)}
       <HeaderInfo>
-        <h3> Rec Email </h3>
-        <p>Last Seen ...</p>
+        <h3>{recipientEmail}</h3>
+        {recipientSnapshot? (
+        <p>Last active:{' '}
+        {recipient?.lastSeen?.toDate() ? (
+          <TimeAgo datetime={recipient?.lastSeen?.toDate()}/>
+        ):Unavailable}</p>
+        ):(
+          <p>Loading last active</p>
+        )}
       </HeaderInfo>
 
       <HeaderIcons>
@@ -89,7 +111,7 @@ function ChatScreen({chat,message}) {
 
 
       <MessageContainer>
-        {/* {showMessages()} */}
+        {showMessages()}
         <EndOfMessage />
       </MessageContainer>
       
