@@ -48,7 +48,6 @@ function Sidebar() {
     }
   }
 
-  console.log(user.photoURL)
   return (
     <Container>
       <Header>
